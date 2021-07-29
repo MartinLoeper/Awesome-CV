@@ -1,0 +1,5 @@
+If you want to verify the given signature, do the following:
+
+1) Download public gpg key from MIT keyserver: gpg --keyserver pgp.mit.edu --recv-key 71FE706750F202E9
+2) Download the PDF file and its corresponding detached signature from GitHub release
+3) Validate the PDF file using the downloaded public key and the released detached gpg signature: gpg --verify cv-martin-loeper.pdf.asc cv-martin-loeper.pdf
