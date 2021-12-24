@@ -11,7 +11,7 @@ on:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-    container: thomasweise/texlive@sha256:6ca69a6f8fab11dc38063a41c6c5cbdd4b3a389b99c06fa5616495b9df6ff4f7
+    container: texlive/texlive@sha256:4fccebb310b868649d081e7a670305f31fe99c566d1589f354e2f37f9c616909
     env:
       GPG_KEY_FPR: 71FE706750F202E9
 
