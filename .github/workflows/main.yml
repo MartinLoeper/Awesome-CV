@@ -19,6 +19,17 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repo
         uses: actions/checkout@v2
+        
+      - name: Checkout linkrot repo
+        uses: actions/checkout@v2
+        with:
+          repository: MartinLoeper/linkrot
+          path: linkrot
+          
+      - name: Install linkrot
+        working-directory: linkrot
+        run: |
+          pip install .
 
       - name: Install FontAwesome, Biber, mawk, gnupg
         run: |
@@ -28,6 +39,13 @@ jobs:
       # Use included Makefile
       - name: Compile
         run: make
+        
+      - name: Check hyperref availability
+        working-directory: linkrot
+        env:
+          EXCLUDED_URLS: 'https://www.linkedin.com/in/martinloeper,mailto:martin.loeper@gmx.de,B.SC'
+        run: |
+          linkrot ../cv/cv-martin-loeper.pdf -c -j
 
       - name: Read the package version
         id: release
