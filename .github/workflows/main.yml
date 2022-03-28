@@ -11,7 +11,7 @@ on:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-    container: texlive/texlive@sha256:4fccebb310b868649d081e7a670305f31fe99c566d1589f354e2f37f9c616909
+    container: docker.io/loeper/full-latex-biber-python-3:latest
     env:
       GPG_KEY_FPR: 71FE706750F202E9
 
@@ -26,11 +26,6 @@ jobs:
           repository: MartinLoeper/linkrot
           path: linkrot
 
-      - name: Install FontAwesome, Biber, mawk, gnupg
-        run: |
-          apt-get update -y
-          apt-get install -y fonts-font-awesome biber mawk gnupg python3-pip
-          
       - name: Install linkrot
         working-directory: linkrot
         run: |
