@@ -1029,7 +1029,7 @@
 
 \DeclareBibliographyDriver{thesis}{%
   \entrytitlestyle{\printfield{title}}%
-  \newblock%
+  \newblock
   \entrypositionstyle{\printnames{author}}%
   \par%
   \newblock%
@@ -1038,6 +1038,14 @@
     \printlist{location}%
     \setunit*{\addcomma\space}%
     \printfield{year}%
+    \newunit%
+  }
+  \par
+  \newblock%
+  \descriptionstyle{%
+    \fontsize{8pt}{1em}\bodyfontlight\color{graytext}
+    \setunit*{\space}%
+    \printfield{howpublished}
     \newunit%
   }
   \par\vspace{0.3\baselineskip}
