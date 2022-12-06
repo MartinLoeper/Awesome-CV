@@ -1,0 +1,4 @@
+[submodule "cover-letters"]
+	path = cover-letters
+	url = keybase://private/martinloeper/cover-letters
+	branch = master

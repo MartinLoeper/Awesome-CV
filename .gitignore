@@ -1,0 +1,36 @@
+### TeX ###
+## Core latex/pdflatex auxiliary files:
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fdb_latexmk
+
+## BibLaTeX auxiliary files:
+*.bbl
+*.bcf
+*.blg
+
+## Intermediate documents:
+*.dvi
+*-converted-to.*
+
+# Keep a clean cv directory
+cv/*.pdf
+cv/*.synctex.gz
+cv/*.synctex(busy)
+cv/*.run.xml
+
+### Editor ###
+## Vim & Emacs temp files:
+.*sw[op]
+*~
+
+### Mac OS X ###
+## Mac OS X metadata files:
+*.DS_Store
+
+cover-letters/

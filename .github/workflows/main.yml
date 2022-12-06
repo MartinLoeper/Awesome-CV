@@ -1,0 +1,102 @@
+name: Release New CV Version
+
+on:
+  push:
+    paths:
+      - 'cv/**'
+      - 'awesome-cv.cls'
+      - 'Makefile'
+      - '.github/workflows/**'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    container: docker.io/loeper/full-latex-biber-python-3:latest
+    env:
+      GPG_KEY_FPR: 71FE706750F202E9
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        
+      - name: Checkout linkrot repo
+        uses: actions/checkout@v2
+        with:
+          repository: MartinLoeper/linkrot
+          path: linkrot
+
+      - name: Install linkrot
+        working-directory: linkrot
+        run: |
+          pip install .
+
+      # Use included Makefile
+      - name: Compile
+        run: make
+        
+      - name: Check hyperref availability
+        working-directory: linkrot
+        env:
+          EXCLUDED_URLS: 'https://www.linkedin.com/in/martinloeper,mailto:martin.loeper@gmx.de,B.SC'
+        run: |
+          linkrot ../cv/cv-martin-loeper.pdf -c -j
+
+      - name: Read the package version
+        id: release
+        run: |
+          SHORT_SHA=$(echo "$GITHUB_SHA"| awk '{print substr($0,0,8)}')
+          GENERATED_NAME="$(date +"%m/%d/%Y %T")"
+          echo "::set-output name=GENERATED_NAME::$GENERATED_NAME"
+          echo "::set-output name=SHORT_SHA::$SHORT_SHA"
+
+      - name: Prepare the GPG agent
+        run: |
+          mkdir -p "$HOME/.gnupg"
+          echo "default-key ${GPG_KEY_FPR}" > "$HOME/.gnupg/gpg.conf"
+          chmod -R 0600 "$HOME/.gnupg"
+
+      - name: Import GPG key
+        id: import_gpg
+        uses: MartinLoeper/ghaction-import-gpg@master
+        with:
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PRIVATE_KEY_PASSWD }}
+          keygrip: ${{ secrets.GPG_KEY_GRIP }}
+
+      - name: Create a detached signature
+        id: sign
+        run: |
+          gpg --detach-sig --armor -u "${GPG_KEY_FPR}!" cv/cv-martin-loeper.pdf
+          gpg --detach-sig --armor -u "${GPG_KEY_FPR}!" cv/cv-us-martin-loeper.pdf
+          sha256sum cv/cv-us-martin-loeper.pdf cv/cv-martin-loeper.pdf
+
+      # Upload new PDFs as a new release
+      - name: Release with a unique tag
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: ${{ steps.release.outputs.SHORT_SHA }}
+          prerelease: false
+          title: ${{ steps.release.outputs.GENERATED_NAME }}
+          files: |
+            cv/cv-martin-loeper.pdf
+            cv/cv-us-martin-loeper.pdf
+            cv/cv-martin-loeper.pdf.asc
+            cv/cv-us-martin-loeper.pdf.asc
+            HOWTO-verify.txt
+
+      # We need a release under the 'latest' tag to reference the assets properly from other repos
+      - name: Release with the latest tag
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: latest
+          prerelease: false
+          title: ${{ steps.release.outputs.GENERATED_NAME }}
+          files: |
+            cv/cv-martin-loeper.pdf
+            cv/cv-us-martin-loeper.pdf
+            cv/cv-martin-loeper.pdf.asc
+            cv/cv-us-martin-loeper.pdf.asc
+            HOWTO-verify.txt
