@@ -38,7 +38,7 @@ jobs:
       - name: Check hyperref availability
         working-directory: linkrot
         env:
-          EXCLUDED_URLS: 'https://www.linkedin.com/in/martinloeper,mailto:martin.loeper@gmx.de,B.SC'
+          EXCLUDED_URLS: 'https://www.linkedin.com/in/martinloeper,mailto:martin.loeper@gmx.de,B.SC,https://www.sap.com/about.html,https://stackoverflow.com/users/10473469,https://www.fupa.net/player/nv-martin-loper-702462'
         run: |
           linkrot ../cv/cv-martin-loeper.pdf -c -j
 
